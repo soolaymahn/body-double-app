@@ -1,6 +1,6 @@
 # Beside
 
-**Live:** [https://body-double-app-demo.vercel.app/](https://body-double-app-demo.vercel.app/)
+**Live:** [https://body-double-app.vercel.app/](https://body-double-app.vercel.app/)
 
 NYC study-partner matching for people in a long exam season — bar, LSAT, CFA, MCAT, and similar. The first slice is a web app: an editorial marketing homepage (`src/components/home`), a short matching questionnaire, proximity + schedule matching, a hold at a Tier 1–4 study space, and a placeholder for focused-work retreats.
 
