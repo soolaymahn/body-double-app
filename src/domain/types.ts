@@ -3,6 +3,8 @@
  * Keep this module free of React / Next.js so it can move to React Native later.
  */
 
+import type { MatchingQuestionnaireV3 } from "./questionnaire-v3";
+
 export const DAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"] as const;
 export type Day = (typeof DAYS)[number];
 
@@ -130,6 +132,8 @@ export type StudyProfile = {
   breaks: BreakPreference;
   talk: TalkPreference;
   bio: string;
+  /** Full v3 matching questionnaire answers (source of truth for onboarding). */
+  matching: MatchingQuestionnaireV3;
 };
 
 export type MatchBreakdown = {

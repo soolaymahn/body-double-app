@@ -1,6 +1,20 @@
+import {
+  emptyMatchingQuestionnaireV3,
+  legacyProfileToV3,
+} from "./questionnaire-v3";
 import type { StudyProfile } from "./types";
 
-export const SAMPLE_PROFILE: StudyProfile = {
+type LegacySeed = Omit<StudyProfile, "matching">;
+
+function withMatching(profile: LegacySeed): StudyProfile {
+  const stub: StudyProfile = {
+    ...profile,
+    matching: emptyMatchingQuestionnaireV3(),
+  };
+  return { ...profile, matching: legacyProfileToV3(stub) };
+}
+
+export const SAMPLE_PROFILE: StudyProfile = withMatching({
   id: "you",
   name: "Alex Chen",
   exam: "ny-bar",
@@ -13,9 +27,9 @@ export const SAMPLE_PROFILE: StudyProfile = {
   breaks: "hourly",
   talk: "check-ins",
   bio: "NY bar in July. I work faster when someone else is also grinding.",
-};
+});
 
-export const MOCK_STUDENTS: StudyProfile[] = [
+const MOCK_SEEDS: LegacySeed[] = [
   {
     id: "priya",
     name: "Priya Raman",
@@ -185,6 +199,8 @@ export const MOCK_STUDENTS: StudyProfile[] = [
     bio: "Night classes energy. North Brooklyn if you can do late.",
   },
 ];
+
+export const MOCK_STUDENTS: StudyProfile[] = MOCK_SEEDS.map(withMatching);
 
 export function studentById(id: string): StudyProfile | undefined {
   if (id === SAMPLE_PROFILE.id) return SAMPLE_PROFILE;

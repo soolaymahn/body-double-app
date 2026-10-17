@@ -13,6 +13,7 @@ import type {
   VenueTier,
 } from "./types";
 import { formatTiers } from "./copy";
+import { isMatchingQuestionnaireComplete } from "./questionnaire-v3";
 import { VENUES } from "./venues";
 
 const WEIGHTS = {
@@ -246,8 +247,9 @@ export function nextSessionDraft(
 
 export function isProfileComplete(profile: Partial<StudyProfile> | null): profile is StudyProfile {
   if (!profile) return false;
-  return Boolean(
-    profile.id &&
+  if (
+    !(
+      profile.id &&
       profile.name &&
       profile.exam &&
       profile.neighborhoodId &&
@@ -261,6 +263,15 @@ export function isProfileComplete(profile: Partial<StudyProfile> | null): profil
       profile.venueTiers.length > 0 &&
       profile.eat &&
       profile.breaks &&
-      profile.talk,
-  );
+      profile.talk
+    )
+  ) {
+    return false;
+  }
+  if (!profile.matching) return false;
+  return isMatchingQuestionnaireComplete(profile.matching, {
+    name: profile.name,
+    neighborhoodId: profile.neighborhoodId,
+    neighborhoodOther: profile.neighborhoodOther,
+  });
 }

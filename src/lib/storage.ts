@@ -1,5 +1,6 @@
 "use client";
 
+import { legacyProfileToV3 } from "@/domain/questionnaire-v3";
 import type { BookedSession, StudyProfile, VenueTier } from "@/domain/types";
 import { VENUE_TIERS } from "@/domain/types";
 
@@ -35,7 +36,11 @@ function migrateProfile(value: unknown): StudyProfile | null {
   if (venueTiers.length === 0) return null;
   const rest = { ...record };
   delete rest.venueBrandIds;
-  return { ...rest, venueTiers };
+  const migrated = { ...rest, venueTiers } as StudyProfile;
+  if (!migrated.matching) {
+    migrated.matching = legacyProfileToV3(migrated);
+  }
+  return migrated;
 }
 
 function canUseStorage() {
