@@ -6,7 +6,8 @@ import { Container, Eyebrow } from "@/components/home/primitives";
 const LEDGER = [
   { give: "How you work", get: "The person" },
   { give: "When you work", get: "The time" },
-  { give: "Where you are", get: "The place" },
+  { give: "Where you are", get: "The location" },
+  { give: "Where you work", get: "The place" },
 ];
 
 export function Hero() {
