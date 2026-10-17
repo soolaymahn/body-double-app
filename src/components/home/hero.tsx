@@ -6,7 +6,8 @@ import { Container, Eyebrow } from "@/components/home/primitives";
 const LEDGER = [
   { give: "How you work", get: "The person" },
   { give: "When you work", get: "The time" },
-  { give: "Where you are", get: "The place" },
+  { give: "Where you are", get: "The location" },
+  { give: "Where you work", get: "The place" },
 ];
 
 export function Hero() {
@@ -14,8 +15,8 @@ export function Hero() {
     <section className="border-b border-border">
       <Container className="pt-16 pb-16 sm:pt-24 sm:pb-20 lg:pt-28 lg:pb-24">
         <Eyebrow>In-person focus · NYC</Eyebrow>
-        <h1 className="font-heading mt-6 max-w-4xl text-[2.75rem] leading-[1.02] tracking-tight sm:text-6xl lg:text-7xl">
-          You study better with someone across the table.
+        <h1 className="font-heading mt-6 max-w-5xl text-[2.75rem] leading-[1.02] tracking-tight sm:text-6xl lg:text-7xl">
+          For Accountability and Focus - You study better across the right Study Partner!
         </h1>
 
         <div className="mt-12 grid gap-12 lg:mt-16 lg:grid-cols-2 lg:gap-16">
