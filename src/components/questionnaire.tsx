@@ -10,8 +10,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
+import { NeighborhoodField } from "@/components/neighborhood-field";
 import { formatWindow } from "@/domain/matching";
-import { NEIGHBORHOODS } from "@/domain/neighborhoods";
+import { type NeighborhoodChoice } from "@/domain/neighborhoods";
 import {
   AC01_OPTIONS,
   AC02_OPTIONS,
@@ -86,7 +87,7 @@ const emptyDraft = (): Draft =>
   applyV3ToLegacyProfile({
     id: "you",
     name: "",
-    neighborhoodId: "chelsea",
+    neighborhoodId: "other",
     neighborhoodOther: "",
     bio: "",
     matching: emptyMatchingQuestionnaireV3(),
@@ -126,6 +127,18 @@ export function Questionnaire({ initial }: { initial?: StudyProfile | null }) {
 
   function updateBase<K extends keyof Draft>(key: K, value: Draft[K]) {
     setDraft((current) => applyV3ToLegacyProfile({ ...current, [key]: value }));
+    setError(null);
+  }
+
+  function setNeighborhood(choice: NeighborhoodChoice) {
+    setDraft((current) =>
+      applyV3ToLegacyProfile({
+        ...current,
+        neighborhoodId: choice.neighborhoodId,
+        neighborhoodOther:
+          choice.neighborhoodId === "other" ? (choice.neighborhoodOther ?? "") : undefined,
+      }),
+    );
     setError(null);
   }
 
@@ -267,34 +280,14 @@ export function Questionnaire({ initial }: { initial?: StudyProfile | null }) {
       {step === 1 ? (
         <div className="grid gap-3">
           <p className="text-sm text-muted-foreground">
-            Matching starts with proximity. We are NYC-only for now — pick the
+            Matching starts with proximity. We are NYC-only for now — type the
             neighborhood you actually leave from.
           </p>
-          <div className="grid gap-2 sm:grid-cols-2">
-            {NEIGHBORHOODS.map((hood) => (
-              <OptionCard
-                key={hood.id}
-                selected={draft.neighborhoodId === hood.id}
-                title={hood.name}
-                description={hood.borough}
-                onClick={() => updateBase("neighborhoodId", hood.id)}
-              />
-            ))}
-          </div>
-          {draft.neighborhoodId === "other" ? (
-            <div className="grid gap-2">
-              <Label htmlFor="neighborhood-other">Neighborhood name</Label>
-              <Input
-                id="neighborhood-other"
-                value={draft.neighborhoodOther ?? ""}
-                onChange={(event) =>
-                  updateBase("neighborhoodOther", event.target.value)
-                }
-                placeholder="Greenpoint"
-                className="h-11 text-base"
-              />
-            </div>
-          ) : null}
+          <NeighborhoodField
+            neighborhoodId={draft.neighborhoodId}
+            neighborhoodOther={draft.neighborhoodOther}
+            onChange={setNeighborhood}
+          />
         </div>
       ) : null}
 

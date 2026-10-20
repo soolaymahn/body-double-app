@@ -62,6 +62,12 @@ export const NEIGHBORHOODS: Neighborhood[] = [
     coordinates: { lat: 40.7081, lng: -73.9571 },
   },
   {
+    id: "greenpoint",
+    name: "Greenpoint",
+    borough: "Brooklyn",
+    coordinates: { lat: 40.7304, lng: -73.9515 },
+  },
+  {
     id: "park-slope",
     name: "Park Slope",
     borough: "Brooklyn",
@@ -106,6 +112,60 @@ export const NEIGHBORHOOD_BY_ID: Record<NeighborhoodId, Neighborhood> =
     NeighborhoodId,
     Neighborhood
   >;
+
+/** Catalog neighborhoods offered as autocomplete. "Other" is only a storage bucket. */
+export const LISTED_NEIGHBORHOODS: Neighborhood[] = NEIGHBORHOODS.filter(
+  (neighborhood) => neighborhood.id !== "other",
+);
+
+export type NeighborhoodChoice = {
+  neighborhoodId: NeighborhoodId;
+  /** Set when the typed name is not in the catalog. */
+  neighborhoodOther?: string;
+};
+
+/** Text shown in the neighborhood field for a saved profile. */
+export function neighborhoodInputValue(profile: {
+  neighborhoodId: NeighborhoodId;
+  neighborhoodOther?: string;
+}): string {
+  if (profile.neighborhoodId === "other") {
+    return profile.neighborhoodOther ?? "";
+  }
+  return NEIGHBORHOOD_BY_ID[profile.neighborhoodId].name;
+}
+
+/**
+ * Map a typed neighborhood onto the profile fields the matcher already reads.
+ * A catalog name (any casing) becomes that neighborhood id. Anything else is
+ * stored as `other` plus the typed name, same as the old free-text path.
+ */
+export function neighborhoodFromInput(input: string): NeighborhoodChoice {
+  const trimmed = input.trim();
+  if (!trimmed) {
+    return { neighborhoodId: "other", neighborhoodOther: "" };
+  }
+  const known = LISTED_NEIGHBORHOODS.find(
+    (neighborhood) => neighborhood.name.toLowerCase() === trimmed.toLowerCase(),
+  );
+  if (known) {
+    return { neighborhoodId: known.id };
+  }
+  return { neighborhoodId: "other", neighborhoodOther: trimmed };
+}
+
+/** Catalog matches for the current query. Empty until the person has typed. */
+export function filterNeighborhoodSuggestions(input: string): Neighborhood[] {
+  const query = input.trim().toLowerCase();
+  if (!query) return [];
+  return LISTED_NEIGHBORHOODS.filter((neighborhood) =>
+    neighborhood.name.toLowerCase().includes(query),
+  ).sort((a, b) => {
+    const aStarts = a.name.toLowerCase().startsWith(query) ? 0 : 1;
+    const bStarts = b.name.toLowerCase().startsWith(query) ? 0 : 1;
+    return aStarts - bStarts;
+  });
+}
 
 /** Catalog name, or the typed NYC neighborhood when the choice is Other. */
 export function neighborhoodLabel(profile: {

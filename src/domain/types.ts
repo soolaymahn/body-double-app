@@ -80,6 +80,7 @@ export type NeighborhoodId =
   | "soho"
   | "financial-district"
   | "williamsburg"
+  | "greenpoint"
   | "park-slope"
   | "astoria"
   | "long-island-city"
